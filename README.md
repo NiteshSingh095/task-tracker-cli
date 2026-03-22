@@ -28,8 +28,8 @@ Build the CLI:
 If you are using windows for this project than build command will be as given below:
 go build -o task-cli.exe ./cmd
 
-and when you want to run it than , follow as below example:
-task-cli.exe add "Task A"
+When you want to run it than , follow as below example:
+./task-cli.exe add "Task A"
 ```
 
 ```
@@ -91,3 +91,5 @@ This project demonstrates:
 * Layered architecture
 * Error handling
 * Clean code practices
+
+![alt text](image.png)

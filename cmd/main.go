@@ -91,15 +91,24 @@ func handleList() {
 }
 
 /// Utility function to print task details in a readable format
-func printTaskDetails(task []model.Task) {
+func printTaskDetails(tasks []model.Task) {
 
-	if len(task) == 0 {
+	if len(tasks) == 0 {
 		fmt.Println("No tasks found")
 		return
 	}
 
-	for _, t := range task {
-		fmt.Printf("[%d] %s (%s)\n", t.ID, t.Description, t.Status)
+	fmt.Printf("\n%-5s %-25s %-15s\n", "ID", "Description", "Status")
+	fmt.Println("--------------------------------------------------")
+
+	for _, t := range tasks {
+		fmt.Printf("%-5d %-25s %-15s\n",
+			t.ID,
+			t.Description,
+			t.Status,
+		)
 	}
+
+	fmt.Println()
 }
 
