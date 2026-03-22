@@ -1,5 +1,9 @@
 # Task Tracker CLI (Go)
 
+
+Project URL:
+https://github.com/NiteshSingh095/task-tracker-cli.git
+
 A simple command-line task tracking application built in Go.
 This tool helps you manage daily tasks directly from the terminal.
 
@@ -12,9 +16,6 @@ This tool helps you manage daily tasks directly from the terminal.
 * Mark tasks as done
 * List all tasks
 * Filter tasks by status
-
-## Project URL:
-https://github.com/NiteshSingh095/task-tracker-cli.git
 
 ## Installation
 
