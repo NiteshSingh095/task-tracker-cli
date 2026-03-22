@@ -43,7 +43,7 @@ func HandleAdd() {
 		return
 	}
 
-	fmt.Println("Task added successfully : ", newTask.ID)
+	fmt.Printf("Task added successfully (ID: %d)", newTask.ID)
 
 }
 
