@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"time"
 	"strconv"
-	// "io/ioutil"
+	"time"
 )
 
 const taskFile = "tasks.json"
@@ -14,7 +13,7 @@ const taskFile = "tasks.json"
 func main() {
 	fmt.Println("All OS Arguments : ", os.Args)
 
-	if(len(os.Args) < 2) {
+	if len(os.Args) < 2 {
 		fmt.Println("Please provide command")
 		return
 	}
@@ -26,7 +25,7 @@ func main() {
 	}
 
 	cmd := os.Args[1]
-	
+
 	switch cmd {
 	case "add":
 		handleAdd()
@@ -46,7 +45,7 @@ func main() {
 }
 
 func timeStamp() string {
-	return time.Now().Format(time.RFC3339);
+	return time.Now().Format(time.RFC3339)
 }
 
 func updateTask() {
@@ -57,7 +56,7 @@ func updateTask() {
 	}
 
 	taskID := os.Args[2]
-	// newDescription := os.Args[3]
+	newDescription := os.Args[3]
 
 	if taskID == "" {
 		fmt.Println("Task ID cannot be empty")
@@ -78,11 +77,30 @@ func updateTask() {
 		return
 	}
 
-	for _, t := range data {
+	found := false
+
+	for idx, t := range data {
 		if t.ID == int(tId) {
-			fmt.Println("Task found: ", t)
+			data[idx].Description = newDescription
+			data[idx].UpdatedAt = timeStamp()
+			found = true
+			break
 		}
 	}
+
+	if !found {
+		fmt.Println("Task with ID ", taskID, " not exists")
+		return
+	}
+
+	err = WriteTasks(data)
+
+	if err != nil {
+		fmt.Println("Error writing tasks: ", err)
+		return
+	}
+
+	fmt.Println("Task updated successfully")
 }
 
 func handleAdd() {
@@ -102,11 +120,11 @@ func handleAdd() {
 	}
 
 	newTask := Task{
-		ID: getNextTaskId(tasks),
+		ID:          getNextTaskId(tasks),
 		Description: description,
-		Status: "TODO",
-		CreatedAt: timeStamp(),
-		UpdatedAt: timeStamp(),
+		Status:      "TODO",
+		CreatedAt:   timeStamp(),
+		UpdatedAt:   timeStamp(),
 	}
 
 	tasks = append(tasks, newTask)
@@ -139,14 +157,55 @@ func handleList() {
 }
 
 func handleDelete() {
-	
+
 	if len(os.Args) < 3 {
 		fmt.Println("Please provide task ID to delete")
 		return
 	}
 
 	taskID := os.Args[2]
-	fmt.Println("Task ID to delete: ", taskID)
+
+	if taskID == "" {
+		fmt.Println("Task ID cannot be empty")
+		return
+	}
+
+	tId, err := strconv.Atoi(taskID)
+
+	if err != nil {
+		fmt.Println("Invalid task ID")
+		return
+	}
+
+	data, err := readTasks()
+
+	if err != nil {
+		fmt.Println("Error reading tasks: ", err)
+		return
+	}
+
+	foundIndex := -1
+
+	for idx, t := range data {
+		if t.ID == int(tId) {
+			foundIndex = idx
+			break
+		}
+	}
+
+	if foundIndex == -1 {
+		fmt.Println("Task with ID ", taskID, " not exists")
+		return
+	}
+
+	data = append(data[:foundIndex], data[foundIndex+1:]...)
+	err = WriteTasks(data)
+	if err != nil {
+		fmt.Println("Error writing tasks: ", err)
+		return
+	}
+
+	fmt.Println("Task deleted successfully")
 }
 
 func getNextTaskId(tasks []Task) int {
@@ -180,7 +239,7 @@ func WriteTasks(tasks []Task) error {
 		return err
 	}
 
-	return os.WriteFile(taskFile, data, 0644);
+	return os.WriteFile(taskFile, data, 0644)
 }
 
 func ensureTaskFileExists() error {
