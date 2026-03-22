@@ -39,6 +39,12 @@ func main() {
 	case "update":
 		updateTask()
 
+	case "mark-in-progress":
+		markTaskInProgress()
+
+	case "mark-done":
+		markTaskDone()
+
 	default:
 		fmt.Println("Unknown Command")
 	}
@@ -46,6 +52,132 @@ func main() {
 
 func timeStamp() string {
 	return time.Now().Format(time.RFC3339)
+}
+
+func markTaskDone() {
+	
+	if len(os.Args) < 3 {
+		fmt.Println("Please provide task ID to mark done")
+		return
+	}
+
+	taskID := os.Args[2]
+
+	if taskID == "" {
+		fmt.Println("Task ID cannot be empty")
+		return
+	}
+
+	tId, err := strconv.Atoi(taskID)
+
+	if err != nil {
+		fmt.Println("Invalid task ID")
+		return
+	}
+
+	err = statusValidation(tId, statusDone)
+
+	if err != nil {
+		fmt.Println("Error validating task status: ", err)
+		return
+	}
+
+	err = updateTaskStatus(tId, statusDone)
+
+	if err != nil {
+		fmt.Println("Error updating task status: ", err)
+		return
+	}
+
+	fmt.Println("Task marked as done successfully")
+}
+
+func statusValidation(id int, newStatus string) error {
+
+	data, err := readTasks()
+
+	if err != nil {
+		return fmt.Errorf("unable to read tasks: %v", err)
+	}
+
+	for _, t := range data {
+		if t.ID == id {
+			if t.Status == newStatus {
+				return fmt.Errorf("Task with ID %d is already in status %s", id, newStatus)
+			}
+		}
+	}
+
+	return  nil
+}
+
+func markTaskInProgress() {
+	
+	if len(os.Args) < 3 {
+		fmt.Println("Please provide task ID to mark in progress")
+		return
+	}
+
+	taskID := os.Args[2]
+
+	if taskID == "" {
+		fmt.Println("Task ID cannot be empty")
+		return
+	}
+
+	tId, err := strconv.Atoi(taskID)
+
+	if err != nil {
+		fmt.Println("Invalid task ID")
+		return
+	}
+
+	err = statusValidation(tId, statusInProgress)
+
+	if err != nil {
+		fmt.Println("Error validating task status: ", err)
+		return
+	}
+
+	err = updateTaskStatus(tId, statusInProgress)
+
+	if err != nil {
+		fmt.Println("Error updating task status: ", err)
+		return
+	}
+
+	fmt.Println("Task marked as in progress successfully")
+}
+
+func updateTaskStatus(taskId int, newStatus string) error {
+	
+	data, err := readTasks()
+	if err != nil {
+		return err
+	}
+
+	found := false
+
+	for idx, t := range data {
+		if t.ID == taskId {
+			data[idx].Status = newStatus
+			data[idx].UpdatedAt = timeStamp()
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		return fmt.Errorf("Task with ID %d not exists", taskId)
+	}
+
+	err = WriteTasks(data)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Task status updated successfully")
+	return nil
 }
 
 func updateTask() {

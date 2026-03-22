@@ -7,3 +7,9 @@ type Task struct {
 	CreatedAt string `json:"createdAt"`
 	UpdatedAt string `json:"updatedAt"`
 }
+
+const (
+	statusTodo = "TODO"
+	statusInProgress = "IN_PROGRESS"
+	statusDone = "DONE"
+)
