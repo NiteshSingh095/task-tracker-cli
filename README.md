@@ -13,6 +13,9 @@ This tool helps you manage daily tasks directly from the terminal.
 * List all tasks
 * Filter tasks by status
 
+## Project URL:
+https://github.com/NiteshSingh095/task-tracker-cli.git
+
 ## Installation
 
 Clone the repository:
