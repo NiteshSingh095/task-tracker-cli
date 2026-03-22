@@ -2,6 +2,9 @@
 
 
 Project URL:
+https://roadmap.sh/projects/task-tracker
+
+Solution URL:
 https://github.com/NiteshSingh095/task-tracker-cli.git
 
 A simple command-line task tracking application built in Go.
